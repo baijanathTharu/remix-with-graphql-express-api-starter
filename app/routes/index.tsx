@@ -8,7 +8,7 @@ export default function Index() {
         <Link to='/about'>Go to About</Link>
       </div>
       <div>
-        <a href='http://localhost:3000/graphql'>Graphql Api</a>
+        <a href='http://localhost:4000/graphql'>Graphql Api</a>
       </div>
     </div>
   );
