@@ -2,8 +2,8 @@ import {
   InputMaybe,
   LoginInput,
   SignUpInput,
-} from 'express-app/src/graphql/generated-types/graphql';
-import { db } from '../../../../lib';
+} from '~/express-app/src/graphql/generated-types/graphql';
+import { db } from '~/express-app/src/lib';
 import { comparePassword, hashPassword } from '../utils';
 
 export function getUserById(id: number) {

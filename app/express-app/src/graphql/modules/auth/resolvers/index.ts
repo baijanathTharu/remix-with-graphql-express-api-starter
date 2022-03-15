@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { AuthModule } from '../generated-types/module-types';
 import { createUser, loginUser } from '../services';
 
@@ -16,10 +15,9 @@ export const authResolvers: AuthModule.Resolvers = {
           done: true,
         };
       } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError) {
-          if (e.code === 'P2002') {
-            throw new Error('User already exists');
-          }
+        // @ts-ignore
+        if (e.code === 'P2002') {
+          throw new Error('User already exists');
         }
 
         throw new Error(e as string);

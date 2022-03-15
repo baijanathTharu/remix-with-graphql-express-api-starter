@@ -1,6 +1,6 @@
-schema: './express-app/src/graphql/modules/**/typedefs/*.graphql'
+schema: './app/express-app/src/graphql/modules/**/typedefs/*.graphql'
 generates:
-  ./express-app/src/graphql/modules/:
+  ./app/express-app/src/graphql/modules/:
     preset: graphql-modules
     presetConfig:
       baseTypesPath: ../generated-types/graphql.ts # Where to create the complete schema types
