@@ -1,8 +1,10 @@
 /* eslint-disable prefer-promise-reject-errors */
 import 'dotenv/config';
 import { compare, genSalt, hash } from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 
 const saltRounds = Number(process.env.SALT_ROUNDS) || 8;
+const tokenSecret = process.env.TOKEN_SECRET || 'secret';
 
 export function hashPassword(
   password: string
@@ -38,3 +40,20 @@ export function comparePassword({
     });
   });
 }
+
+export function generateTokens({ userId }: { userId: number }): {
+  accessToken: string;
+  refreshToken: string;
+} {
+  const accessToken = sign({ userId }, tokenSecret, {
+    expiresIn: '15m',
+  });
+  const refreshToken = sign({ userId }, tokenSecret, {
+    expiresIn: '7d',
+  });
+  return {
+    accessToken,
+    refreshToken,
+  };
+}
+

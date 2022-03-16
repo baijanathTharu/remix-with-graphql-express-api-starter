@@ -1,5 +1,6 @@
 import { AuthModule } from '../generated-types/module-types';
 import { createUser, loginUser } from '../services';
+import { generateTokens } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Mutation: {
@@ -24,10 +25,14 @@ export const authResolvers: AuthModule.Resolvers = {
       }
     },
     login: async (_, { loginInput }) => {
-      await loginUser(loginInput);
+      const user = await loginUser(loginInput);
+
+      const { accessToken, refreshToken } = generateTokens({ userId: user.id });
 
       return {
         done: true,
+        accessToken,
+        refreshToken,
       };
     },
   },

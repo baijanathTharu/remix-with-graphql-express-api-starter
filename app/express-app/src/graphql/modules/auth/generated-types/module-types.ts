@@ -4,7 +4,7 @@ import * as gm from "graphql-modules";
 export namespace AuthModule {
   interface DefinedFields {
     Mutation: 'signUp' | 'login';
-    AuthPayload: 'done';
+    AuthPayload: 'done' | 'accessToken' | 'refreshToken';
   };
   
   interface DefinedInputFields {
@@ -37,6 +37,8 @@ export namespace AuthModule {
     AuthPayload?: {
       '*'?: gm.Middleware[];
       done?: gm.Middleware[];
+      accessToken?: gm.Middleware[];
+      refreshToken?: gm.Middleware[];
     };
   };
 }

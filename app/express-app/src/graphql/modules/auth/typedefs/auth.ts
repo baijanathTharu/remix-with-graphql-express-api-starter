@@ -19,5 +19,7 @@ export const authTypedefs = gql`
 
   type AuthPayload {
     done: Boolean!
+    accessToken: String
+    refreshToken: String
   }
 `;
