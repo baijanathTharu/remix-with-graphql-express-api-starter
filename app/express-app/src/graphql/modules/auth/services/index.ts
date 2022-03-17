@@ -82,3 +82,39 @@ export function createToken(createTokenInput: CreateTokenInput) {
   });
 }
 
+export async function isTokenRevoked(token: string) {
+  const loginToken = await db.loginToken.findFirst({
+    where: {
+      refreshToken: token,
+    },
+  });
+
+  return !!loginToken?.isRevokedBy;
+}
+
+export async function revokeTokenInDb({
+  token,
+  isRevokedBy,
+}: {
+  token: string;
+  isRevokedBy: number;
+}) {
+  const loginToken = await db.loginToken.findFirst({
+    where: {
+      refreshToken: token,
+    },
+  });
+
+  if (!loginToken) {
+    throw new Error('Token not found');
+  }
+
+  return db.loginToken.update({
+    where: {
+      id: loginToken.id,
+    },
+    data: {
+      isRevokedBy,
+    },
+  });
+}

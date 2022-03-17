@@ -1,14 +1,28 @@
 import { AuthModule } from '../generated-types/module-types';
-import { createToken, createUser, loginUser } from '../services';
+import {
+  createToken,
+  createUser,
+  isTokenRevoked,
+  loginUser,
+  revokeTokenInDb,
+} from '../services';
 import { generateTokens, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
     newToken: async (_, _arg, { request }) => {
       // verfify refresh token
-      const refreshToken = request.headers.get('refresh-token') || '';
+      const refreshTokenWithBearer = request.headers.get('refresh-token') || '';
+      const oldToken = refreshTokenWithBearer.split(' ')[1];
+
+      // find if the refresh token is revoked
+      const isRevoked = await isTokenRevoked(oldToken);
+      if (isRevoked) {
+        throw new Error('Refresh token is revoked');
+      }
+
       const decodedRefreshToken = await verifyToken({
-        token: refreshToken.split(' ')[1],
+        token: oldToken,
       });
 
       if (!decodedRefreshToken.userId) {
@@ -21,10 +35,13 @@ export const authResolvers: AuthModule.Resolvers = {
       });
 
       // save new refresh token to db
-      createToken({
+      const newToken = await createToken({
         userId: decodedRefreshToken.userId,
         refreshToken: newRefreshToken,
       });
+
+      // revoken old token
+      await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
 
       return {
         done: true,
