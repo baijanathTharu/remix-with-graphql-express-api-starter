@@ -24,7 +24,9 @@ export const authResolvers: AuthModule.Resolvers = {
         throw new Error(e as string);
       }
     },
-    login: async (_, { loginInput }) => {
+    login: async (_, { loginInput }, { request }) => {
+      console.log('request', request);
+
       const user = await loginUser(loginInput);
 
       const { accessToken, refreshToken } = generateTokens({ userId: user.id });

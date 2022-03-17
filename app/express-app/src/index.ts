@@ -32,6 +32,7 @@ app.use(morgan('tiny'));
 
 // Bind GraphQL Yoga to `/graphql` endpoint
 // Here it takes the request and response objects and handles them internally
+// app.use('/graphql', graphQLServer.requestListener);
 app.use('/graphql', graphQLServer.requestListener);
 
 app.all(

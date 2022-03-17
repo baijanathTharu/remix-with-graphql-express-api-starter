@@ -4,4 +4,7 @@ import { applicationSchema } from './modules';
 export const graphQLServer = createServer({
   maskedErrors: false,
   schema: applicationSchema,
+  context: ({ request }) => ({ request: request}),
 });
+
+
