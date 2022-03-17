@@ -67,3 +67,17 @@ export async function loginUser(
 
   return user;
 }
+
+type CreateTokenInput = {
+  userId: number;
+  refreshToken: string;
+};
+
+export function createToken(createTokenInput: CreateTokenInput) {
+  return db.loginToken.create({
+    data: {
+      userId: createTokenInput.userId,
+      refreshToken: createTokenInput.refreshToken,
+    },
+  });
+}

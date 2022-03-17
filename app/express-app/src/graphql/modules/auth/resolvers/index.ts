@@ -1,5 +1,5 @@
 import { AuthModule } from '../generated-types/module-types';
-import { createUser, loginUser } from '../services';
+import { createToken, createUser, loginUser } from '../services';
 import { generateTokens } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
@@ -24,12 +24,15 @@ export const authResolvers: AuthModule.Resolvers = {
         throw new Error(e as string);
       }
     },
-    login: async (_, { loginInput }, { request }) => {
-      console.log('request', request);
-
+    login: async (_, { loginInput }) => {
       const user = await loginUser(loginInput);
 
       const { accessToken, refreshToken } = generateTokens({ userId: user.id });
+
+      await createToken({
+        userId: user.id,
+        refreshToken,
+      });
 
       return {
         done: true,
