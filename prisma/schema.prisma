@@ -30,8 +30,9 @@ model LoginToken {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @default(now())
 
-  user   User @relation(fields: [userId], references: [id])
-  userId Int
+  isRevokedBy Int?
+  user        User @relation(fields: [userId], references: [id])
+  userId      Int
 
   @@map("login_tokens")
 }
