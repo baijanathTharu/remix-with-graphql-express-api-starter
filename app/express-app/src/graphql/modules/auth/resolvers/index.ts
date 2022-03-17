@@ -1,8 +1,38 @@
 import { AuthModule } from '../generated-types/module-types';
 import { createToken, createUser, loginUser } from '../services';
-import { generateTokens } from '../utils';
+import { generateTokens, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
+  Query: {
+    newToken: async (_, _arg, { request }) => {
+      // verfify refresh token
+      const refreshToken = request.headers.get('refresh-token') || '';
+      const decodedRefreshToken = await verifyToken({
+        token: refreshToken.split(' ')[1],
+      });
+
+      if (!decodedRefreshToken.userId) {
+        throw new Error('Invalid refresh token');
+      }
+
+      // generate new tokens
+      const { accessToken, refreshToken: newRefreshToken } = generateTokens({
+        userId: decodedRefreshToken.userId,
+      });
+
+      // save new refresh token to db
+      createToken({
+        userId: decodedRefreshToken.userId,
+        refreshToken: newRefreshToken,
+      });
+
+      return {
+        done: true,
+        accessToken,
+        refreshToken: newRefreshToken,
+      };
+    },
+  },
   Mutation: {
     signUp: async (_, { signUpInput }) => {
       try {
