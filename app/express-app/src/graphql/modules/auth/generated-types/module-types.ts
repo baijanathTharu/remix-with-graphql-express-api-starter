@@ -4,7 +4,7 @@ import * as gm from "graphql-modules";
 export namespace AuthModule {
   interface DefinedFields {
     Mutation: 'signUp' | 'login';
-    Query: 'newToken';
+    Query: 'me' | 'newToken';
     AuthPayload: 'done' | 'accessToken' | 'refreshToken';
   };
   
@@ -18,6 +18,7 @@ export namespace AuthModule {
   export type SignUpInput = Pick<Types.SignUpInput, DefinedInputFields['SignUpInput']>;
   export type LoginInput = Pick<Types.LoginInput, DefinedInputFields['LoginInput']>;
   export type Query = Pick<Types.Query, DefinedFields['Query']>;
+  export type UserWithoutPassword = Types.UserWithoutPassword;
   
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
   export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
@@ -40,6 +41,7 @@ export namespace AuthModule {
     };
     Query?: {
       '*'?: gm.Middleware[];
+      me?: gm.Middleware[];
       newToken?: gm.Middleware[];
     };
     AuthPayload?: {

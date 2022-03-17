@@ -7,6 +7,7 @@ export const authTypedefs = gql`
   }
 
   type Query {
+    me: UserWithoutPassword!
     # rotate refresh token - old token is passed in the header
     newToken: AuthPayload!
   }

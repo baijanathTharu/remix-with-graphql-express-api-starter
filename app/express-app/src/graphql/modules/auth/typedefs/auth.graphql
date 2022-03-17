@@ -4,6 +4,7 @@ type Mutation {
 }
 
 type Query {
+  me: UserWithoutPassword!
   # rotate refresh token - old token is passed in the header
   newToken: AuthPayload!
 }
