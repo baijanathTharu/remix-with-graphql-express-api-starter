@@ -45,6 +45,7 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  newToken: AuthPayload;
   users: Array<User>;
 };
 
@@ -168,6 +169,7 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  newToken?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
