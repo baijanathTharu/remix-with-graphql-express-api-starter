@@ -1,4 +1,4 @@
 export interface ResolverContext {
-  req: Request;
+  request: Request;
   userId: number;
 }

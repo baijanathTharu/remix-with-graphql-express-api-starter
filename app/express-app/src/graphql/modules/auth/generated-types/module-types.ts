@@ -4,6 +4,7 @@ import * as gm from "graphql-modules";
 export namespace AuthModule {
   interface DefinedFields {
     Mutation: 'signUp' | 'login';
+    Query: 'me' | 'newToken';
     AuthPayload: 'done' | 'accessToken' | 'refreshToken';
   };
   
@@ -16,12 +17,16 @@ export namespace AuthModule {
   export type AuthPayload = Pick<Types.AuthPayload, DefinedFields['AuthPayload']>;
   export type SignUpInput = Pick<Types.SignUpInput, DefinedInputFields['SignUpInput']>;
   export type LoginInput = Pick<Types.LoginInput, DefinedInputFields['LoginInput']>;
+  export type Query = Pick<Types.Query, DefinedFields['Query']>;
+  export type UserWithoutPassword = Types.UserWithoutPassword;
   
   export type MutationResolvers = Pick<Types.MutationResolvers, DefinedFields['Mutation']>;
+  export type QueryResolvers = Pick<Types.QueryResolvers, DefinedFields['Query']>;
   export type AuthPayloadResolvers = Pick<Types.AuthPayloadResolvers, DefinedFields['AuthPayload'] | '__isTypeOf'>;
   
   export interface Resolvers {
     Mutation?: MutationResolvers;
+    Query?: QueryResolvers;
     AuthPayload?: AuthPayloadResolvers;
   };
   
@@ -33,6 +38,11 @@ export namespace AuthModule {
       '*'?: gm.Middleware[];
       signUp?: gm.Middleware[];
       login?: gm.Middleware[];
+    };
+    Query?: {
+      '*'?: gm.Middleware[];
+      me?: gm.Middleware[];
+      newToken?: gm.Middleware[];
     };
     AuthPayload?: {
       '*'?: gm.Middleware[];

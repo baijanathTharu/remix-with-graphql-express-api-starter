@@ -45,6 +45,8 @@ export type MutationSignUpArgs = {
 
 export type Query = {
   __typename?: 'Query';
+  me: UserWithoutPassword;
+  newToken: AuthPayload;
   users: Array<User>;
 };
 
@@ -60,6 +62,13 @@ export type User = {
   id: Scalars['Int'];
   name?: Maybe<Scalars['String']>;
   password: Scalars['String'];
+};
+
+export type UserWithoutPassword = {
+  __typename?: 'UserWithoutPassword';
+  email: Scalars['String'];
+  id: Scalars['Int'];
+  name?: Maybe<Scalars['String']>;
 };
 
 
@@ -140,6 +149,7 @@ export type ResolversTypes = {
   SignUpInput: SignUpInput;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
+  UserWithoutPassword: ResolverTypeWrapper<UserWithoutPassword>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -153,6 +163,7 @@ export type ResolversParentTypes = {
   SignUpInput: SignUpInput;
   String: Scalars['String'];
   User: User;
+  UserWithoutPassword: UserWithoutPassword;
 };
 
 export type AuthPayloadResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = {
@@ -168,6 +179,8 @@ export type MutationResolvers<ContextType = ResolverContext, ParentType extends 
 };
 
 export type QueryResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  me?: Resolver<ResolversTypes['UserWithoutPassword'], ParentType, ContextType>;
+  newToken?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType>;
   users?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
@@ -179,10 +192,18 @@ export type UserResolvers<ContextType = ResolverContext, ParentType extends Reso
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UserWithoutPasswordResolvers<ContextType = ResolverContext, ParentType extends ResolversParentTypes['UserWithoutPassword'] = ResolversParentTypes['UserWithoutPassword']> = {
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type Resolvers<ContextType = ResolverContext> = {
   AuthPayload?: AuthPayloadResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  UserWithoutPassword?: UserWithoutPasswordResolvers<ContextType>;
 };
 
