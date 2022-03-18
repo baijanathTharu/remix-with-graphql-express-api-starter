@@ -1,5 +1,7 @@
 ## Remix with Graphql
 
+This is a remix and graphql express server template with basic authentication.
+
 1. This is a remix starter template for express and graphql.
 2. This user graphql-modules for making modular graphql apis.
 3. Graphql code generator is also setup for type safety.
@@ -25,25 +27,25 @@ yarn install
 DATABASE_URL=mysql://<usernmae>:<password>@localhost:3306/<db_name>
 ```
 
-3. Run the prisma migration
+4. Run the prisma migration
 
 ```sh
 yarn prisma migrate dev
 ```
 
-4. Start the dev server
+5. Start the dev server
 
 ```sh
 yarn dev
 ```
 
-5. Build for deployment.
+6. Build for deployment.
 
 ```sh
 yarn build
 ```
 
-6. Run the server in production
+7. Run the server in production
 
 ```sh
 node build/index.js

@@ -1,8 +1,11 @@
 {
-  "name": "remix-app-template",
+  "name": "remix-express-graphql",
   "private": true,
-  "description": "",
-  "license": "",
+  "description": "This is a remix and graphql express server template with basic authentication.",
+  "license": "MIT",
+  "author": {
+    "name": "Baijanath Tharu"
+  },
   "sideEffects": false,
   "scripts": {
     "build": "cross-env NODE_ENV=production remix build",
