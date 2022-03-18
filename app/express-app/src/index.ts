@@ -9,6 +9,7 @@ import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import { applicationSchema } from './graphql/modules';
 import { verifyToken } from './graphql/modules/auth/utils';
+import cookieParser from 'cookie-parser';
 
 const port = process.env.PORT || 5000;
 
@@ -18,6 +19,9 @@ async function startApolloServer() {
   app.use('/rest', (req: Request, res: Response) => {
     res.status(200).send({ data: 'Hello World!' });
   });
+
+  // cookie parser
+  app.use(cookieParser());
 
   app.use(compression());
 
@@ -41,7 +45,10 @@ async function startApolloServer() {
     schema: applicationSchema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     context: async ({ req, res }) => {
-      const accessToken = (req.headers['access-token'] as string) || '';
+      const accessToken =
+        req.cookies['access-token'] ||
+        (req.headers['access-token'] as string) ||
+        '';
 
       const { userId } = await verifyToken({
         token: accessToken.split(' ')[1],

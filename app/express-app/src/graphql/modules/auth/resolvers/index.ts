@@ -7,7 +7,7 @@ import {
   loginUser,
   revokeTokenInDb,
 } from '../services';
-import { generateTokens, verifyToken } from '../utils';
+import { generateTokens, setCookie, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
@@ -89,7 +89,7 @@ export const authResolvers: AuthModule.Resolvers = {
         throw new Error(e as string);
       }
     },
-    login: async (_, { loginInput }) => {
+    login: async (_, { loginInput }, { res }) => {
       const user = await loginUser(loginInput);
 
       const { accessToken, refreshToken } = generateTokens({ userId: user.id });
@@ -99,10 +99,20 @@ export const authResolvers: AuthModule.Resolvers = {
         refreshToken,
       });
 
+      // set cookie
+      setCookie({
+        res,
+        cookieData: accessToken,
+        cookieName: 'access-token',
+      });
+      setCookie({
+        res,
+        cookieData: refreshToken,
+        cookieName: 'refresh-token',
+      });
+
       return {
         done: true,
-        accessToken,
-        refreshToken,
       };
     },
   },
