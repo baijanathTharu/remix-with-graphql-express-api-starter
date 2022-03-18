@@ -10,13 +10,10 @@ import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import { applicationSchema } from './graphql/modules';
 
-// Start server
-// eslint-disable-next-line no-console
-// app.listen(port, () => console.log(`Server is listening on port ${port}!`));
+const port = process.env.PORT || 5000;
 
 async function startApolloServer() {
   const app: Application = express();
-  const port = process.env.PORT || 5000;
 
   app.use('/rest', (req: Request, res: Response) => {
     res.status(200).send({ data: 'Hello World!' });
@@ -60,10 +57,10 @@ async function startApolloServer() {
     })
   );
 
-  await new Promise<void>((resolve) =>
-    httpServer.listen({ port: 4000 }, resolve)
+  await new Promise<void>((resolve) => httpServer.listen({ port }, resolve));
+  console.log(
+    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
   );
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
 startApolloServer().catch((err) => {
