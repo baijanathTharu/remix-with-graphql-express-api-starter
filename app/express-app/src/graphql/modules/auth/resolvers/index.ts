@@ -1,3 +1,4 @@
+import { token } from '~/express-app/src/config';
 import { AuthModule } from '../generated-types/module-types';
 import {
   createToken,
@@ -27,10 +28,12 @@ export const authResolvers: AuthModule.Resolvers = {
       return rest;
     },
 
-    newToken: async (_, _arg, { req }) => {
+    newToken: async (_, _arg, { req, res }) => {
       // verfify refresh token
       const refreshTokenWithBearer =
-        (req.headers['refresh-token'] as string) || '';
+        req.cookies['refresh-token'] ||
+        (req.headers['refresh-token'] as string) ||
+        '';
       const oldToken = refreshTokenWithBearer.split(' ')[1];
 
       // find if the refresh token is revoked
@@ -61,10 +64,23 @@ export const authResolvers: AuthModule.Resolvers = {
       // revoken old token
       await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
 
+      // set new access token cookie
+      setCookie({
+        res,
+        cookieData: accessToken,
+        cookieName: 'access-token',
+        maxAge: token.ACCESS_TOKEN_AGE as number,
+      });
+      // set new refresh token cookie
+      setCookie({
+        res,
+        cookieData: newRefreshToken,
+        cookieName: 'refresh-token',
+        maxAge: token.REFRESH_TOKEN_AGE as number,
+      });
+
       return {
         done: true,
-        accessToken,
-        refreshToken: newRefreshToken,
       };
     },
   },
@@ -104,11 +120,13 @@ export const authResolvers: AuthModule.Resolvers = {
         res,
         cookieData: accessToken,
         cookieName: 'access-token',
+        maxAge: token.ACCESS_TOKEN_AGE as number,
       });
       setCookie({
         res,
         cookieData: refreshToken,
         cookieName: 'refresh-token',
+        maxAge: token.REFRESH_TOKEN_AGE as number,
       });
 
       return {

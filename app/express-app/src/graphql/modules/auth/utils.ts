@@ -78,14 +78,16 @@ export function setCookie({
   res,
   cookieData,
   cookieName,
+  maxAge = 15 * 60 * 1000, // 15 minutes
 }: {
   res: Response;
   cookieData: string;
   cookieName: string;
+  maxAge?: number;
 }) {
   res.cookie(cookieName, `Bearer ${cookieData}`, {
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
+    maxAge,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
   });
