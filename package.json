@@ -22,7 +22,6 @@
     "@graphql-codegen/cli": "^2.6.2",
     "@graphql-codegen/graphql-modules-preset": "^2.3.7",
     "@graphql-codegen/typescript-resolvers": "^2.5.4",
-    "@graphql-yoga/node": "^0.0.1-canary-ae94a57.0",
     "@prisma/client": "^3.10.0",
     "@remix-run/express": "^1.2.3",
     "@remix-run/react": "^1.2.3",
