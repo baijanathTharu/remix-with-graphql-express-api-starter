@@ -23,6 +23,8 @@
     "@prisma/client": "^3.10.0",
     "@remix-run/express": "^1.2.3",
     "@remix-run/react": "^1.2.3",
+    "apollo-server-core": "^3.6.4",
+    "apollo-server-express": "^3.6.4",
     "bcrypt": "^5.0.1",
     "compression": "^1.7.4",
     "cross-env": "^7.0.3",
