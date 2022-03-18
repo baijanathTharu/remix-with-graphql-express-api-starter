@@ -1,59 +1,50 @@
-# Welcome to Remix!
+## Remix with Graphql
 
-- [Remix Docs](https://remix.run/docs)
+1. This is a remix starter template for express and graphql.
+2. This user graphql-modules for making modular graphql apis.
+3. Graphql code generator is also setup for type safety.
+4. Basic Authentication with access token and refresh token for the graphql api.
 
-## Development
+## Getting started
 
-You'll need to run two terminals (or bring in a process manager like concurrently/pm2-dev if you like):
-
-Start the Remix development asset server
+1. Clone this repo.
 
 ```sh
-npm run dev
+git clone git@github.com:baijanathTharu/remix-with-graphql-express-api-starter.git
 ```
 
-In a new tab start your express app:
+2. Install the dependencies
 
 ```sh
-npm run start:dev
+yarn install
 ```
 
-This starts your app in development mode, which will purge the server require cache when Remix rebuilds assets so you don't need a process manager restarting the express server.
+3. Setup a database for prisma and add the database url in .env
 
-## Deployment
-
-First, build your app for production:
-
-```sh
-npm run build
+```
+DATABASE_URL=mysql://<usernmae>:<password>@localhost:3306/<db_name>
 ```
 
-Then run the app in production mode:
+3. Run the prisma migration
 
 ```sh
-npm start
+yarn prisma migrate dev
 ```
 
-Now you'll need to pick a host to deploy it to.
-
-### DIY
-
-If you're familiar with deploying express applications you should be right at home just make sure to deploy the output of `remix build`
-
-- `server/build/`
-- `public/build/`
-
-### Using a Template
-
-When you ran `npx create-remix@latest` there were a few choices for hosting. You can run that again to create a new project, then copy over your `app/` folder to the new project that's pre-configured for your target server.
+4. Start the dev server
 
 ```sh
-cd ..
-# create a new project, and pick a pre-configured host
-npx create-remix@latest
-cd my-new-remix-app
-# remove the new project's app (not the old one!)
-rm -rf app
-# copy your app over
-cp -R ../my-old-remix-app/app app
+yarn dev
+```
+
+5. Build for deployment.
+
+```sh
+yarn build
+```
+
+6. Run the server in production
+
+```sh
+node build/index.js
 ```
