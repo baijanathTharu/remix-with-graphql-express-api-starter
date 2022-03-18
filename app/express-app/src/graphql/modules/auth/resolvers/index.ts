@@ -27,9 +27,10 @@ export const authResolvers: AuthModule.Resolvers = {
       return rest;
     },
 
-    newToken: async (_, _arg, { request }) => {
+    newToken: async (_, _arg, { req }) => {
       // verfify refresh token
-      const refreshTokenWithBearer = request.headers.get('refresh-token') || '';
+      const refreshTokenWithBearer =
+        (req.headers['refresh-token'] as string) || '';
       const oldToken = refreshTokenWithBearer.split(' ')[1];
 
       // find if the refresh token is revoked

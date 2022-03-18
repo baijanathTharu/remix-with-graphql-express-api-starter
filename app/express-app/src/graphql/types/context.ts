@@ -1,4 +1,7 @@
+import { Request, Response } from 'express';
+
 export interface ResolverContext {
-  request: Request;
+  req: Request;
+  res: Response;
   userId: number;
 }

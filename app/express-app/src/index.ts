@@ -3,12 +3,12 @@ import express, { Application, Request, Response } from 'express';
 import compression from 'compression';
 import morgan from 'morgan';
 import { createRequestHandler } from '@remix-run/express';
-import { graphQLServer } from './graphql';
 import * as serverBuild from '@remix-run/dev/server-build';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
 import { applicationSchema } from './graphql/modules';
+import { verifyToken } from './graphql/modules/auth/utils';
 
 const port = process.env.PORT || 5000;
 
@@ -36,15 +36,23 @@ async function startApolloServer() {
 
   app.use(morgan('tiny'));
 
-  // Bind GraphQL Yoga to `/graphql` endpoint
-  // Here it takes the request and response objects and handles them internally
-  // app.use('/graphql', graphQLServer.requestListener);
-  app.use('/graphql', graphQLServer.requestListener);
-
   const httpServer = http.createServer(app);
   const server = new ApolloServer({
     schema: applicationSchema,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    context: async ({ req, res }) => {
+      const accessToken = (req.headers['access-token'] as string) || '';
+
+      const { userId } = await verifyToken({
+        token: accessToken.split(' ')[1],
+      });
+
+      return {
+        req,
+        res,
+        userId,
+      };
+    },
   });
   await server.start();
   server.applyMiddleware({ app });
