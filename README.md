@@ -37,6 +37,9 @@ yarn prisma migrate dev
 
 ```sh
 yarn dev
+
+# generate types
+yarn generate
 ```
 
 6. Build for deployment.
