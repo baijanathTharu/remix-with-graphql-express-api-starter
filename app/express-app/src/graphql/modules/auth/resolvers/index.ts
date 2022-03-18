@@ -1,3 +1,4 @@
+import { token } from '~/express-app/src/config';
 import { AuthModule } from '../generated-types/module-types';
 import {
   createToken,
@@ -7,7 +8,7 @@ import {
   loginUser,
   revokeTokenInDb,
 } from '../services';
-import { generateTokens, verifyToken } from '../utils';
+import { generateTokens, setCookie, verifyToken } from '../utils';
 
 export const authResolvers: AuthModule.Resolvers = {
   Query: {
@@ -27,9 +28,12 @@ export const authResolvers: AuthModule.Resolvers = {
       return rest;
     },
 
-    newToken: async (_, _arg, { request }) => {
+    newToken: async (_, _arg, { req, res }) => {
       // verfify refresh token
-      const refreshTokenWithBearer = request.headers.get('refresh-token') || '';
+      const refreshTokenWithBearer =
+        req.cookies['refresh-token'] ||
+        (req.headers['refresh-token'] as string) ||
+        '';
       const oldToken = refreshTokenWithBearer.split(' ')[1];
 
       // find if the refresh token is revoked
@@ -60,10 +64,23 @@ export const authResolvers: AuthModule.Resolvers = {
       // revoken old token
       await revokeTokenInDb({ token: oldToken, isRevokedBy: newToken.id });
 
+      // set new access token cookie
+      setCookie({
+        res,
+        cookieData: accessToken,
+        cookieName: 'access-token',
+        maxAge: token.ACCESS_TOKEN_AGE as number,
+      });
+      // set new refresh token cookie
+      setCookie({
+        res,
+        cookieData: newRefreshToken,
+        cookieName: 'refresh-token',
+        maxAge: token.REFRESH_TOKEN_AGE as number,
+      });
+
       return {
         done: true,
-        accessToken,
-        refreshToken: newRefreshToken,
       };
     },
   },
@@ -88,7 +105,7 @@ export const authResolvers: AuthModule.Resolvers = {
         throw new Error(e as string);
       }
     },
-    login: async (_, { loginInput }) => {
+    login: async (_, { loginInput }, { res }) => {
       const user = await loginUser(loginInput);
 
       const { accessToken, refreshToken } = generateTokens({ userId: user.id });
@@ -98,10 +115,22 @@ export const authResolvers: AuthModule.Resolvers = {
         refreshToken,
       });
 
+      // set cookie
+      setCookie({
+        res,
+        cookieData: accessToken,
+        cookieName: 'access-token',
+        maxAge: token.ACCESS_TOKEN_AGE as number,
+      });
+      setCookie({
+        res,
+        cookieData: refreshToken,
+        cookieName: 'refresh-token',
+        maxAge: token.REFRESH_TOKEN_AGE as number,
+      });
+
       return {
         done: true,
-        accessToken,
-        refreshToken,
       };
     },
   },

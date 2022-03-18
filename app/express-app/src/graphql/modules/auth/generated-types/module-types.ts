@@ -5,7 +5,7 @@ export namespace AuthModule {
   interface DefinedFields {
     Mutation: 'signUp' | 'login';
     Query: 'me' | 'newToken';
-    AuthPayload: 'done' | 'accessToken' | 'refreshToken';
+    AuthPayload: 'done';
   };
   
   interface DefinedInputFields {
@@ -47,8 +47,6 @@ export namespace AuthModule {
     AuthPayload?: {
       '*'?: gm.Middleware[];
       done?: gm.Middleware[];
-      accessToken?: gm.Middleware[];
-      refreshToken?: gm.Middleware[];
     };
   };
 }

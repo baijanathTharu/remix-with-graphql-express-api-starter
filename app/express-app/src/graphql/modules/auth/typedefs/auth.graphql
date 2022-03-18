@@ -22,6 +22,4 @@ input LoginInput {
 
 type AuthPayload {
   done: Boolean!
-  accessToken: String
-  refreshToken: String
 }
