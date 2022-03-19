@@ -7,9 +7,9 @@ import * as serverBuild from '@remix-run/dev/server-build';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import http from 'http';
-import { applicationSchema } from './graphql/modules';
-import { verifyToken } from './graphql/modules/auth/utils';
 import cookieParser from 'cookie-parser';
+import { applicationSchema } from '~/express-app/src/graphql/modules';
+import { verifyToken } from '~/express-app/src/graphql/modules/auth/utils';
 
 const port = process.env.PORT || 5000;
 
@@ -31,7 +31,7 @@ async function startApolloServer() {
   // Remix fingerprints its assets so we can cache forever.
   app.use(
     '/build',
-    express.static('../../public/build', { immutable: true, maxAge: '1y' })
+    express.static('public/build', { immutable: true, maxAge: '1y' })
   );
 
   // Everything else (like favicon.ico) is cached for an hour. You may want to be

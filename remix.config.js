@@ -2,7 +2,8 @@
  * @type {import('@remix-run/dev').AppConfig}
  */
 module.exports = {
-  server: './app/express-app/src/index.ts',
+  server: './graphqlServer.ts',
+  // server: './server.ts',
   ignoredRouteFiles: ['.*'],
   devServerBroadcastDelay: 1000,
   // appDirectory: "app",
