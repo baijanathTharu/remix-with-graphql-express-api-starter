@@ -5,8 +5,12 @@ import {
   useSearchParams,
   redirect,
   useTransition,
+  json,
 } from 'remix';
 import type { ActionFunction, LoaderFunction } from 'remix';
+import { gql } from 'graphql-request';
+import { graphQLClient } from '~/lib/graphqlClient';
+import { MutationLoginArgs } from '~/express-app/src/graphql/generated-types/graphql';
 
 type ActionData = {
   formError?: string;
@@ -18,8 +22,15 @@ type ActionData = {
     email: string;
     password: string;
   };
-  done?: boolean;
 };
+
+const loginDocument = gql`
+  mutation login($loginInput: LoginInput!) {
+    login(loginInput: $loginInput) {
+      done
+    }
+  }
+`;
 
 export const action: ActionFunction = async ({
   request,
@@ -28,9 +39,7 @@ export const action: ActionFunction = async ({
 
   const email = form.get('email');
   const password = form.get('password');
-  const redirectTo = form.get('redirectTo') || '/';
-
-  console.log('email', email);
+  const redirectTo = (form.get('redirectTo') as string) || '/';
 
   if (!email && !password) {
     return {
@@ -63,9 +72,22 @@ export const action: ActionFunction = async ({
   }
 
   // graphql request to login resolver
-  return {
-    done: true,
-  };
+  try {
+    await graphQLClient.request<any, MutationLoginArgs>(loginDocument, {
+      loginInput: {
+        email,
+        password,
+      },
+    });
+
+    return redirect(redirectTo);
+  } catch (error: any) {
+    const errors = error.response.errors[0];
+
+    return json({
+      formError: JSON.stringify(errors.message),
+    });
+  }
 };
 
 type LoaderData = {};

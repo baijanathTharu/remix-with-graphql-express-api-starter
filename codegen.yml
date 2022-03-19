@@ -1,4 +1,5 @@
 schema: './app/express-app/src/graphql/modules/**/typedefs/*.graphql'
+documents: './app/express-app/src/graphql/modules/**/typedefs/*.operations.graphql'
 generates:
   ./app/express-app/src/graphql/modules/:
     preset: graphql-modules
@@ -10,5 +11,7 @@ generates:
           content: '/* eslint-disable */'
       - typescript
       - typescript-resolvers
+      # - typescript-graphql-request
     config:
       contextType: ../types/context#ResolverContext
+
