@@ -106,32 +106,39 @@ export const authResolvers: AuthModule.Resolvers = {
       }
     },
     login: async (_, { loginInput }, { res }) => {
-      const user = await loginUser(loginInput);
+      try {
+        const user = await loginUser(loginInput);
 
-      const { accessToken, refreshToken } = generateTokens({ userId: user.id });
+        const { accessToken, refreshToken } = generateTokens({
+          userId: user.id,
+        });
 
-      await createToken({
-        userId: user.id,
-        refreshToken,
-      });
+        await createToken({
+          userId: user.id,
+          refreshToken,
+        });
 
-      // set cookie
-      setCookie({
-        res,
-        cookieData: accessToken,
-        cookieName: 'access-token',
-        maxAge: token.ACCESS_TOKEN_AGE as number,
-      });
-      setCookie({
-        res,
-        cookieData: refreshToken,
-        cookieName: 'refresh-token',
-        maxAge: token.REFRESH_TOKEN_AGE as number,
-      });
+        // set cookie
+        setCookie({
+          res,
+          cookieData: accessToken,
+          cookieName: 'access-token',
+          maxAge: token.ACCESS_TOKEN_AGE as number,
+        });
+        setCookie({
+          res,
+          cookieData: refreshToken,
+          cookieName: 'refresh-token',
+          maxAge: token.REFRESH_TOKEN_AGE as number,
+        });
 
-      return {
-        done: true,
-      };
+        return {
+          done: true,
+        };
+      } catch (e) {
+        console.log(e);
+        throw new Error(e as string);
+      }
     },
   },
 };
