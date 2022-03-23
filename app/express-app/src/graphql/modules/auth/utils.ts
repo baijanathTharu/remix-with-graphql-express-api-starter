@@ -1,6 +1,6 @@
 /* eslint-disable prefer-promise-reject-errors */
 import 'dotenv/config';
-import { compare, genSalt, hash } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcryptjs';
 import { sign, verify } from 'jsonwebtoken';
 import { Response } from 'express';
 

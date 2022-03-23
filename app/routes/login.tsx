@@ -3,92 +3,9 @@ import {
   Link,
   useActionData,
   useSearchParams,
-  redirect,
   useTransition,
-  json,
 } from 'remix';
-import type { ActionFunction, LoaderFunction } from 'remix';
-import { gql } from 'graphql-request';
-import { graphQLClient } from '~/lib/graphqlClient';
-import { MutationLoginArgs } from '~/express-app/src/graphql/generated-types/graphql';
-
-type ActionData = {
-  formError?: string;
-  fieldErrors?: {
-    email: string | undefined;
-    password: string | undefined;
-  };
-  fields?: {
-    email: string;
-    password: string;
-  };
-};
-
-const loginDocument = gql`
-  mutation login($loginInput: LoginInput!) {
-    login(loginInput: $loginInput) {
-      done
-    }
-  }
-`;
-
-export const action: ActionFunction = async ({
-  request,
-}): Promise<Response | ActionData> => {
-  const form = await request.formData();
-
-  const email = form.get('email');
-  const password = form.get('password');
-  const redirectTo = (form.get('redirectTo') as string) || '/';
-
-  if (!email && !password) {
-    return {
-      formError: 'Please fill in all fields',
-    };
-  }
-
-  if (typeof email !== 'string' || typeof password !== 'string') {
-    return {
-      formError: 'Form not submitted correctly',
-    };
-  }
-
-  if (!email) {
-    return {
-      fieldErrors: {
-        email: 'Email is required',
-        password: undefined,
-      },
-    };
-  }
-
-  if (!password) {
-    return {
-      fieldErrors: {
-        email: undefined,
-        password: 'Password is required',
-      },
-    };
-  }
-
-  // graphql request to login resolver
-  try {
-    await graphQLClient.request<any, MutationLoginArgs>(loginDocument, {
-      loginInput: {
-        email,
-        password,
-      },
-    });
-
-    return redirect(redirectTo);
-  } catch (error: any) {
-    const errors = error.response.errors[0];
-
-    return json({
-      formError: JSON.stringify(errors.message),
-    });
-  }
-};
+import type { LoaderFunction } from 'remix';
 
 type LoaderData = {};
 
@@ -101,7 +18,7 @@ export const loader: LoaderFunction = async ({
 };
 
 export default function Login() {
-  const actionData = useActionData<ActionData>();
+  const actionData = useActionData();
   const [searchParams] = useSearchParams();
 
   const transition = useTransition();
@@ -116,6 +33,7 @@ export default function Login() {
         <Form
           method='post'
           aria-describedby={actionData?.formError ? 'form-error' : undefined}
+          action='/api/login'
         >
           <input
             type='hidden'
